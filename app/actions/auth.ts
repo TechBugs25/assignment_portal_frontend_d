@@ -9,17 +9,25 @@ interface LoginState {
     success?: boolean;
 }
 
+import { createSession, deleteSession } from "@/app/lib/session";
+import { redirect } from "next/navigation";
+
+export async function logoutAction() {
+    await deleteSession();
+    redirect("/");
+}
+
 export async function loginAction(
     prevState: LoginState,
     formData: FormData
 ): Promise<LoginState> {
-    const email = formData.get("email") as string;
+    const email: string = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     const baseUrl = process.env.BACKEND_LINK;
 
     if (!baseUrl) {
-        return {message: "Auth API URL not configured", success: false};
+        return { message: "Auth API URL not configured", success: false };
     }
 
     try {
@@ -28,11 +36,11 @@ export async function loginAction(
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({email, password}),
+            body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
-        console.log("Response : ", data);
+        // console.log("Response : ", data);
         if (!response.ok) {
             return {
                 message: data?.message ?? "Invalid credentials",
@@ -40,9 +48,16 @@ export async function loginAction(
             };
         }
 
-        return {message: "Login successful", success: true};
+        if (data.tokens?.access_token && data.tokens?.refresh_token) {
+            await createSession(data.tokens.access_token, data.tokens.refresh_token, data.user);
+        } else {
+            return { message: "Login failed: Missing tokens", success: false };
+        }
+
     } catch (error) {
         console.error("Login error:", error);
-        return {message: "Failed to connect to server", success: false};
+        return { message: "Failed to connect to server", success: false };
     }
+
+    redirect("/dashboard");
 }

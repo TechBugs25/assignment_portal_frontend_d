@@ -1,11 +1,33 @@
+"use client"
+
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../components/ui/input";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { Button } from "../components/ui/button";
+import { loginAction } from "@/app/actions/auth";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+
+const initialState = {
+    message: "",
+    success: false,
+};
 
 export function LoginForm() {
+    const [state, action, isPending] = useActionState(loginAction, initialState);
+
+    useEffect(() => {
+        if (state.message) {
+            if (state.success) {
+                toast.success(state.message);
+                // Optionally redirect here if not handled by server action redirect
+            } else {
+                toast.error(state.message);
+            }
+        }
+    }, [state]);
+
     return (
         <div className="w-full max-w-100 flex flex-col gap-6">
             <div className="flex flex-col items-center gap-2 text-center">
@@ -19,17 +41,19 @@ export function LoginForm() {
                     Enter your credentials to manage the newsroom.
                 </p>
             </div>
-            <div className="grid gap-6">
+            <form action={action} className="grid gap-6">
                 <div className="grid gap-2">
                     <Label htmlFor="email">Email Address</Label>
                     <div className="relative">
                         <Input
                             id="email"
+                            name="email"
                             placeholder="admin@newsoffice.com"
                             type="email"
                             autoCapitalize="none"
                             autoComplete="email"
                             autoCorrect="off"
+                            required
                             className="pl-10 bg-secondary/50 border-border/50"
                         />
                         <svg
@@ -52,10 +76,12 @@ export function LoginForm() {
                     <div className="relative">
                         <Input
                             id="password"
+                            name="password"
                             placeholder="••••••••"
                             type="password"
                             autoCapitalize="none"
                             autoComplete="current-password"
+                            required
                             className="pl-10 bg-secondary/50 border-border/50"
                         />
                         <svg
@@ -73,22 +99,10 @@ export function LoginForm() {
                         </svg>
                     </div>
                 </div>
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="remember" />
-                        <Label htmlFor="remember" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Remember Me</Label>
-                    </div>
-                    <Link
-                        href="#"
-                        className="ml-auto inline-block text-sm text-primary underline-offset-4 hover:underline"
-                    >
-                        Forgot Password?
-                    </Link>
-                </div>
-                <Button className="w-full h-11 text-base">
-                    Sign In to News Desk
+                <Button className="w-full h-11 text-base" disabled={isPending}>
+                    {isPending ? "Signing In..." : "Sign In"}
                 </Button>
-            </div>
+            </form>
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground tracking-widest uppercase mt-4">
                 <ShieldCheck className="h-4 w-4 text-green-500" />
                 Secure 256-bit Encrypted Connection

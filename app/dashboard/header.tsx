@@ -19,7 +19,19 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { logoutAction } from "@/app/actions/auth";
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+    user?: {
+        name: string;
+        email: string;
+        id: string;
+    }
+}
+
+export function DashboardHeader({ user }: DashboardHeaderProps) {
+    const initials = user?.name
+        ? user.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+        : "AD";
+
     return (
         <header className="flex h-16 items-center justify-between border-b bg-background px-6">
             <div className="flex items-center gap-4 w-1/3">
@@ -45,17 +57,17 @@ export function DashboardHeader() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                             <Avatar className="h-9 w-9">
-                                <AvatarImage src="/avatars/01.png" alt="@admin" />
-                                <AvatarFallback>AD</AvatarFallback>
+                                <AvatarImage src="" alt={user?.name || "User"} />
+                                <AvatarFallback>{initials}</AvatarFallback>
                             </Avatar>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
-                                <p className="text-sm font-medium leading-none">Admin User</p>
+                                <p className="text-sm font-medium leading-none">{user?.name || "Admin User"}</p>
                                 <p className="text-xs leading-none text-muted-foreground">
-                                    admin@newsoffice.com
+                                    {user?.email || "admin@newsoffice.com"}
                                 </p>
                             </div>
                         </DropdownMenuLabel>
