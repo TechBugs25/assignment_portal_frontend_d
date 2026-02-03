@@ -10,7 +10,20 @@ import {
     Bell,
     Settings,
     Eye,
-    EyeOff
+    EyeOff,
+    Mail,
+    Phone,
+    Calendar,
+    Briefcase,
+    Building,
+    Pencil,
+    Key,
+    Star,
+    Shield,
+    User,
+    Menu,
+    X,
+    IdCardIcon
 } from "lucide-react";
 
 export const DashboardIcon = LayoutDashboard;
@@ -25,3 +38,16 @@ export const BellIcon = Bell;
 export const SettingsIcon = Settings;
 export const EyeIcon = Eye;
 export const EyeOffIcon = EyeOff;
+export const MailIcon = Mail;
+export const PhoneIcon = Phone;
+export const CalendarIcon = Calendar;
+export const BriefcaseIcon = Briefcase;
+export const BuildingIcon = Building;
+export const EditIcon = Pencil;
+export const KeyIcon = Key;
+export const StarIcon = Star;
+export const ShieldIcon = Shield;
+export const UserIcon = User;
+export const MenuIcon = Menu;
+export const CloseIcon = X;
+export const EmployeeIcon = IdCardIcon;

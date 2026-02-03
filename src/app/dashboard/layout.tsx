@@ -1,11 +1,9 @@
 import React from "react";
-import { DashboardIcon, PermissionIcon, StoryIcon, TaskIcon, TeamIcon } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { NavItem } from "@/features/dashboard/components/nav-item";
 import { DashboardHeader } from "@/features/dashboard/components/header";
+import { Sidebar } from "@/features/dashboard/components/sidebar";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const cookieStore = await cookies();
@@ -19,30 +17,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const user = session?.user;
 
     return (
-        <div className="flex h-screen bg-background text-foreground">
-            <aside className="w-64 border-r border-border flex flex-col p-6 bg-muted/40">
-                <div className="flex items-center gap-2 mb-10">
-                    <div className="bg-primary p-2 rounded-lg text-primary-foreground">📰</div>
-                    <h1 className="font-bold text-lg">NewsOffice Pro</h1>
-                </div>
-
-                <nav className="flex-1 space-y-2">
-                    {/* Pass the component name directly, and add the href */}
-                    <NavItem href="/dashboard" icon={DashboardIcon} label="Dashboard" />
-                    <NavItem href="/dashboard/stories" icon={StoryIcon} label="Stories" />
-                    <NavItem href="/dashboard/team" icon={TeamIcon} label="Team" />
-                    <NavItem href="/dashboard/tasks" icon={TaskIcon} label="Tasks" />
-                    <NavItem href="/dashboard/permissions" icon={PermissionIcon} label="Permissions" />
-                </nav>
-
-                <Button className="w-full mt-auto">
-                    + New Story
-                </Button>
-            </aside>
+        <div className="flex h-screen bg-background text-foreground overflow-hidden">
+            <Sidebar />
 
             <div className="flex flex-col flex-1 overflow-hidden">
                 <DashboardHeader user={user} />
-                <main className="flex-1 overflow-y-auto p-8 bg-background">{children}</main>
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-background">
+                    {children}
+                </main>
             </div>
         </div>
     );

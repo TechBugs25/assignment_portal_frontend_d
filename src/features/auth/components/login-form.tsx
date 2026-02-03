@@ -6,7 +6,7 @@ import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {loginAction} from "@/features/auth/auth";
+import {loginAction} from "@/services/auth.service";
 
 const initialState = {
     message: "",

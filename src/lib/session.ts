@@ -1,5 +1,5 @@
 import "server-only";
-import {EncryptJWT, SignJWT, jwtDecrypt, jwtVerify} from "jose";
+import {EncryptJWT, jwtDecrypt, JWTPayload} from "jose";
 import {cookies} from "next/headers";
 
 export interface SessionPayload {
@@ -26,7 +26,7 @@ const encodedKey = Buffer.from(secretKey, "base64");
 // }
 
 export async function encrypt(payload: SessionPayload) {
-    return await new EncryptJWT(payload as any)
+    return await new EncryptJWT(payload as unknown as JWTPayload)
         .setProtectedHeader({alg: "dir", enc: "A256GCM"})
         .setIssuedAt()
         .setExpirationTime("7d")
@@ -52,13 +52,17 @@ export async function decrypt(
 
     try {
         const {payload} = await jwtDecrypt(session, encodedKey);
-        return payload as any;
+        return payload as unknown as SessionPayload;
     } catch {
         return null;
     }
 }
 
-export async function createSession(accessToken: string, refreshToken: string, user: any) {
+export async function createSession(accessToken: string, refreshToken: string, user: {
+    name: string;
+    email: string;
+    id: string;
+}) {
     // Encrypt the tokens before storing them in the cookie
     // We can store them individually or as a single session object
     // Here we store them as a single session token for simplicity and atomicity
