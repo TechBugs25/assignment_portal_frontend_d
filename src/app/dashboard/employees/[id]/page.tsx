@@ -23,7 +23,7 @@ export default async function EmployeeViewPage({ params }: EmployeeViewPageProps
     if (!employee) {
         notFound();
     }
-
+    // console.log(employee)
     const baseUrl = process.env.BACKEND_LINK;
     const avatarUrl = employee.profilePicture?.path
         ? `${baseUrl}/${employee.profilePicture.path.replace(/\\/g, '/')}`

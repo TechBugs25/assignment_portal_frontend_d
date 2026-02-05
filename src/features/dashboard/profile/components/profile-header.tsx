@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { Profile } from "../types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { EditIcon, BriefcaseIcon, CalendarIcon } from "@/components/ui/icons";
+import { BriefcaseIcon, CalendarIcon } from "@/components/ui/icons";
 
 export default function ProfileHeader({ profile }: { profile: Profile }) {
     return (
@@ -16,13 +14,6 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
                         Detailed employee information.
                     </p>
                 </div>
-
-                <Button asChild>
-                    <Link href="/dashboard/profile/edit">
-                        <EditIcon className="mr-2 h-4 w-4" />
-                        Edit Profile
-                    </Link>
-                </Button>
             </div>
 
             <Card className="bg-linear-to-r from-card to-muted/20 border-none">

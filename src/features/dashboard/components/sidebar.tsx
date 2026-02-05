@@ -51,7 +51,7 @@ export function Sidebar() {
 
                 <nav className="flex-1 space-y-2">
                     <NavItem href="/dashboard" icon={DashboardIcon} label="Dashboard" />
-                    <NavItem href="/dashboard/team" icon={TeamIcon} label="Team" />
+                    <NavItem href="/dashboard/employees" icon={EmployeeIcon} label="Employees" />
                     <NavItem href="/dashboard/tasks" icon={TaskIcon} label="Tasks" />
                     <NavItem href="/dashboard/permissions" icon={PermissionIcon} label="Permissions" />
                     <NavItem href="/dashboard/users" icon={UsersIcon} label="Users" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, DragEvent, ChangeEvent } from "react";
+import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 import { uploadFile, deleteFile, UploadedFile } from "@/services/file.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,19 @@ export function FileUpload({
 }: FileUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(
-        currentFilePath ? `${process.env.NEXT_PUBLIC_BACKEND_LINK}/${currentFilePath.replace(/\\/g, '/')}` : null
-    );
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Update preview URL when currentFilePath changes
+    useEffect(() => {
+        if (currentFilePath) {
+            const backendUrl = process.env.BACKEND_LINK || 'http://localhost:3001';
+            const normalizedPath = currentFilePath.replace(/\\/g, '/');
+            setPreviewUrl(`${backendUrl}/${normalizedPath}`);
+        } else {
+            setPreviewUrl(null);
+        }
+    }, [currentFilePath]);
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();

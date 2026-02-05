@@ -3,6 +3,7 @@
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
 import { Profile } from "@/features/dashboard/profile/types";
+import { User, PaginationMeta, UsersResponse } from "@/features/users/types";
 
 export async function getUserProfile(userId: string): Promise<Profile | null> {
     const baseUrl = process.env.BACKEND_LINK;
@@ -43,9 +44,8 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
             lastDate: e.lastDate ?? "N/A",
             department: department ?? "N/A",
             avatarUrl: e.profilePicture?.path
-                ? `${baseUrl}/${e.profilePicture.path.replace(/\\/g, '/')}` // replace backslashes
+                ? `${baseUrl}/${e.profilePicture.path.replace(/\\/g, '/')}`
                 : `https://i.pravatar.cc/150?u=${userId}`,
-
         };
     } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -53,18 +53,28 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
     }
 }
 
-export async function getAllUsers(): Promise<Profile[]> {
+export interface GetUsersResult {
+    users: User[];
+    meta: PaginationMeta;
+}
+
+export async function getUsers(page: number = 1, limit: number = 10): Promise<GetUsersResult> {
     const baseUrl = process.env.BACKEND_LINK;
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session")?.value;
     const session = await decrypt(sessionCookie);
 
+    const emptyResult: GetUsersResult = {
+        users: [],
+        meta: { page: 1, limit: 10, total: 0, totalPages: 0 }
+    };
+
     if (!session?.accessToken) {
-        return [];
+        return emptyResult;
     }
 
     try {
-        const response = await fetch(`${baseUrl}/user`, {
+        const response = await fetch(`${baseUrl}/user?page=${page}&limit=${limit}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${session.accessToken}`,
@@ -74,41 +84,17 @@ export async function getAllUsers(): Promise<Profile[]> {
 
         if (!response.ok) {
             console.error("Failed to fetch users:", response.statusText);
-            return [];
+            return emptyResult;
         }
 
-        const data = await response.json();
+        const data: UsersResponse = await response.json();
 
-        console.log(data)
-        // Handle array response
-        if (!Array.isArray(data)) {
-            console.error("Expected array for users list, got:", typeof data);
-            return [];
-        }
-
-        return data.map((item: any) => {
-            const u = item.user || {};
-            const e = u.employee || {};
-            const d = item.department || "N/A";
-
-            return {
-                id: e.staffId || item.id,
-                name: e.firstName ? `${e.firstName} ${e.lastName || ""}` : (u.name || "Unknown"),
-                email: u.email || "",
-                phone: e.mobileNumber || "",
-                gender: e.gender || "",
-                status: e.status === "active" ? "ACTIVE" : "INACTIVE",
-                employmentType: e.employmentType || "N/A",
-                joinedAt: e.joinDate || "N/A",
-                lastDate: e.lastDate || "N/A",
-                department: d,
-                avatarUrl: e.profilePicture?.path
-                    ? `${baseUrl}/${e.profilePicture.path.replace(/\\/g, '/')}`
-                    : `https://i.pravatar.cc/150?u=${u.id || item.id}`,
-            };
-        });
+        return {
+            users: data.users || [],
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
+        };
     } catch (error) {
         console.error("Error fetching users list:", error);
-        return [];
+        return emptyResult;
     }
 }

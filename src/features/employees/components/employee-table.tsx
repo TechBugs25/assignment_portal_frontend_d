@@ -1,9 +1,9 @@
 "use client";
 
-import { Employee } from "@/features/employees/types";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import {Employee} from "@/features/employees/types";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
+import {cn} from "@/lib/utils";
 import {
     Table,
     TableBody,
@@ -12,9 +12,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "@/components/ui/pagination";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, Pencil } from "lucide-react";
+import {Pagination} from "@/components/ui/pagination";
+import {useRouter, useSearchParams} from "next/navigation";
+import {Eye, Pencil} from "lucide-react";
 import Link from "next/link";
 
 interface EmployeeTableProps {
@@ -27,7 +27,7 @@ interface EmployeeTableProps {
     };
 }
 
-export function EmployeeTable({ employees, meta }: EmployeeTableProps) {
+export function EmployeeTable({employees, meta}: EmployeeTableProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -118,7 +118,7 @@ export function EmployeeTable({ employees, meta }: EmployeeTableProps) {
                                             asChild
                                         >
                                             <Link href={`/dashboard/employees/${employee.id}`}>
-                                                <Eye className="h-4 w-4" />
+                                                <Eye className="h-4 w-4"/>
                                             </Link>
                                         </Button>
                                         <Button
@@ -128,7 +128,7 @@ export function EmployeeTable({ employees, meta }: EmployeeTableProps) {
                                             asChild
                                         >
                                             <Link href={`/dashboard/employees/${employee.id}/edit`}>
-                                                <Pencil className="h-4 w-4" />
+                                                <Pencil className="h-4 w-4"/>
                                             </Link>
                                         </Button>
                                     </div>
