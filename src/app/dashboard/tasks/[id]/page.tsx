@@ -249,6 +249,23 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                 )}
 
 
+                {/* Linked Idea (if task is linked to an idea) */}
+                {task.idea && (
+                    <div className="rounded-lg border bg-card p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                            <FileText className="h-5 w-5 text-muted-foreground" />
+                            <h3 className="font-semibold">Linked Idea</h3>
+                        </div>
+                        <div className="space-y-3">
+                            <p className="font-medium text-base">{task.idea.title}</p>
+                            {task.idea.description && (
+                                <p className="text-sm text-muted-foreground">{task.idea.description}</p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+
                 {/* Details Grid */}
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Left Column */}
