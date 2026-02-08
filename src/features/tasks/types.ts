@@ -28,11 +28,15 @@ export interface Creator {
     joinDate: string;
     lastDate: string | null;
     status: string;
+    user?: {
+        id: string;
+    };
     createdAt: string;
     updatedAt: string;
 }
 
-export interface Assignee extends Creator { }
+export interface Assignee extends Creator {
+}
 
 export interface TaskAssign {
     id: string;
@@ -101,4 +105,15 @@ export interface TasksResponse {
     statusCode: number;
     tasks: Task[];
     meta: PaginationMeta;
+}
+
+export interface UpdateTaskData {
+    title?: string;
+    description?: string;
+    priority?: PriorityLevels;
+    status?: TaskStatus;
+    parentId?: string;
+    ideaId?: string;
+    assignedTo?: string[];
+    fileIds?: string[];
 }

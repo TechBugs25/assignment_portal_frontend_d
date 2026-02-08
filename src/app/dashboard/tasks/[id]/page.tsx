@@ -1,4 +1,6 @@
-import { getTaskById } from "@/services/task.service";
+import { getTaskById, getTasks } from "@/services/task.service";
+import { getEmployees } from "@/services/employee.service";
+import { getIdeas } from "@/services/idea.service";
 import { TaskIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -9,6 +11,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TaskFiles } from "@/features/tasks/components/task-files";
 import { ExtendDeadlineButton } from "@/features/tasks/components/extend-deadline-button";
+import { EditTaskButton } from "@/features/tasks/components/edit-task-button";
+import { cookies } from "next/headers";
+import { decrypt } from "@/lib/session";
 
 interface TaskDetailPageProps {
     params: Promise<{ id: string }>;
@@ -52,11 +57,39 @@ const getPriorityColor = (priority: PriorityLevels): string => {
 export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
     const { id } = await params;
     const task = await getTaskById(id);
-
     if (!task) {
         notFound();
     }
 
+    // Fetch data for edit modal
+    const { employees } = await getEmployees(1, 1000);
+    const { ideas } = await getIdeas(1, 1000);
+    const { tasks } = await getTasks(1, 1000);
+
+    const employeesList = employees.map(emp => ({
+        id: emp.id,
+        staffId: emp.staffId,
+        firstName: emp.firstName,
+        lastName: emp.lastName,
+    }));
+
+    const ideasList = ideas.map(idea => ({
+        id: idea.id,
+        title: idea.title,
+    }));
+
+    const tasksList = tasks.map(t => ({
+        id: t.id,
+        title: t.title,
+    }));
+
+    // Get current user from session
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+    const currentUserId = session?.user.id;
+
+    const isCreator = currentUserId && task.creator.user?.id === currentUserId;
     // Use the last extended deadline if it exists, otherwise use the original deadline
     let deadlineToUse = task.deadline;
     let isExtendedDeadline = false;
@@ -84,7 +117,17 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <ExtendDeadlineButton taskId={task.id} currentDeadline={deadlineToUse} />
+                    {isCreator && (
+                        <>
+                            <EditTaskButton
+                                task={task}
+                                employees={employeesList}
+                                ideas={ideasList}
+                                tasks={tasksList}
+                            />
+                            <ExtendDeadlineButton taskId={task.id} currentDeadline={deadlineToUse} />
+                        </>
+                    )}
                     <Button variant="outline" asChild>
                         <Link href="/dashboard/tasks">
                             ← Back to Tasks

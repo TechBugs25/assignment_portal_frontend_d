@@ -2,7 +2,7 @@
 
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
-import { Task, PaginationMeta, TasksResponse, PriorityLevels, TaskStatus } from "@/features/tasks/types";
+import { Task, PaginationMeta, TasksResponse, PriorityLevels, TaskStatus, UpdateTaskData } from "@/features/tasks/types";
 
 export interface GetTasksResult {
     tasks: Task[];
@@ -46,6 +46,80 @@ export async function getTasks(page: number = 1, limit: number = 10): Promise<Ge
         };
     } catch (error) {
         console.error("Error fetching tasks list:", error);
+        return emptyResult;
+    }
+}
+
+export async function getMyAssignedTasks(page: number = 1, limit: number = 10): Promise<GetTasksResult> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    const emptyResult = { tasks: [], meta: { page: 1, limit: 10, total: 0, totalPages: 0 } };
+
+    if (!session?.accessToken) {
+        return emptyResult;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task/employee/assigned?page=${page}&limit=${limit}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            return emptyResult;
+        }
+
+        const data: TasksResponse = await response.json();
+
+        return {
+            tasks: data.tasks || [],
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
+        };
+    } catch (error) {
+        console.error("Error fetching assigned tasks:", error);
+        return emptyResult;
+    }
+}
+
+export async function getMyCreatedTasks(page: number = 1, limit: number = 10): Promise<GetTasksResult> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    const emptyResult = { tasks: [], meta: { page: 1, limit: 10, total: 0, totalPages: 0 } };
+
+    if (!session?.accessToken) {
+        return emptyResult;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task/employee/created?page=${page}&limit=${limit}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            return emptyResult;
+        }
+
+        const data: TasksResponse = await response.json();
+
+        return {
+            tasks: data.tasks || [],
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
+        };
+    } catch (error) {
+        console.error("Error fetching created tasks:", error);
         return emptyResult;
     }
 }
@@ -173,5 +247,48 @@ export async function extendTaskDeadline(taskId: string, deadline: string): Prom
     } catch (error) {
         console.error("Error extending deadline:", error);
         return { success: false, message: "Failed to extend deadline" };
+    }
+}
+
+export async function updateTask(taskId: string, taskData: UpdateTaskData): Promise<ApiResponse> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    if (!session?.accessToken) {
+        return { success: false, message: "Not authenticated" };
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task/${taskId}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(taskData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: data.message || "Failed to update task"
+            };
+        }
+
+        return {
+            success: true,
+            message: "Task updated successfully",
+            task: data.task
+        };
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return {
+            success: false,
+            message: "An error occurred while updating the task"
+        };
     }
 }

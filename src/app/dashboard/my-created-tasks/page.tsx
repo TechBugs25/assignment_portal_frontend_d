@@ -14,8 +14,7 @@ interface MyCreatedTasksPageProps {
 async function MyCreatedTasksTableContent({ page }: { page: number }) {
     const { tasks, meta } = await getMyCreatedTasks(page);
 
-    // Enable edit and extend deadline for created tasks
-    return <TasksTable tasks={tasks} meta={meta} showActions={true} />;
+    return <TasksTable tasks={tasks} meta={meta} />;
 }
 
 function TasksTableSkeleton() {

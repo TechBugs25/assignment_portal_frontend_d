@@ -19,6 +19,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EditIdeaModal } from "./edit-idea-modal";
+import { useState } from "react";
 
 interface IdeasTableProps {
     ideas: Idea[];
@@ -34,6 +35,7 @@ interface IdeasTableProps {
 export function IdeasTable({ ideas, meta, showActions = false }: IdeasTableProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
 
     const getSerialNumber = (index: number) => {
         return (meta.page - 1) * meta.limit + index + 1;
@@ -43,6 +45,16 @@ export function IdeasTable({ ideas, meta, showActions = false }: IdeasTableProps
         const params = new URLSearchParams(searchParams.toString());
         params.set("page", page.toString());
         router.push(`?${params.toString()}`);
+    };
+
+    const toggleDescription = (ideaId: string) => {
+        const newExpanded = new Set(expandedDescriptions);
+        if (newExpanded.has(ideaId)) {
+            newExpanded.delete(ideaId);
+        } else {
+            newExpanded.add(ideaId);
+        }
+        setExpandedDescriptions(newExpanded);
     };
 
     if (ideas.length === 0) {
@@ -81,9 +93,22 @@ export function IdeasTable({ ideas, meta, showActions = false }: IdeasTableProps
                                         {idea.title}
                                     </TableCell>
                                     <TableCell className="max-w-md">
-                                        <div className="line-clamp-2">
-                                            {idea.description}
-                                        </div>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div
+                                                    className={cn(
+                                                        "cursor-pointer select-text",
+                                                        !expandedDescriptions.has(idea.id) && "line-clamp-2"
+                                                    )}
+                                                    onClick={() => toggleDescription(idea.id)}
+                                                >
+                                                    {idea.description}
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-sm hidden md:block">
+                                                <p className="whitespace-pre-wrap">{idea.description}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </TableCell>
                                     <TableCell>
                                         <Tooltip>

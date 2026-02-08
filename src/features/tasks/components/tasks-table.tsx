@@ -90,8 +90,14 @@ export function TasksTable({ tasks, meta }: TasksTableProps) {
         let deadlineToUse = task.deadline;
 
         if (task.extendedDeadlines && task.extendedDeadlines.length > 0) {
-            // Get the last extended deadline
-            const lastExtendedDeadline = task.extendedDeadlines[task.extendedDeadlines.length - 1];
+            // Get the last extended deadline by sorting by createdAt descending
+            const sortedDeadlines = [...task.extendedDeadlines].sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                return dateB.getTime() - dateA.getTime(); // Descending order (newest first)
+            });
+            // Get the first element (newest extended deadline)
+            const lastExtendedDeadline = sortedDeadlines[0];
             deadlineToUse = lastExtendedDeadline.deadline;
         }
 
@@ -106,6 +112,37 @@ export function TasksTable({ tasks, meta }: TasksTableProps) {
                     month: "short",
                     day: "numeric",
                 })}
+                <br />
+                <span className="text-xs text-muted-foreground">
+                    {date.toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
+                </span>
+            </span>
+        );
+    };
+
+    const formatCompletedAt = (completedAt: string | null) => {
+        if (!completedAt) {
+            return <span className="text-muted-foreground text-xs">-</span>;
+        }
+
+        const date = new Date(completedAt);
+        return (
+            <span>
+                {date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                })}
+                <br />
+                <span className="text-xs text-muted-foreground">
+                    {date.toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
+                </span>
             </span>
         );
     };
@@ -133,6 +170,7 @@ export function TasksTable({ tasks, meta }: TasksTableProps) {
                             <TableHead>Status</TableHead>
                             <TableHead>Priority</TableHead>
                             <TableHead>Deadline</TableHead>
+                            <TableHead>Completed At</TableHead>
                             <TableHead>Assignees</TableHead>
                             <TableHead>Creator</TableHead>
                             <TableHead className="text-center">Actions</TableHead>
@@ -185,6 +223,9 @@ export function TasksTable({ tasks, meta }: TasksTableProps) {
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">
                                         {formatDeadline(task)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {formatCompletedAt(task.completedAt)}
                                     </TableCell>
                                     <TableCell>
                                         {task.assigns.length > 0 ? (
