@@ -5,7 +5,7 @@ import { TaskIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TaskStatus, PriorityLevels } from "@/features/tasks/types";
-import { Calendar, User, Users, FileText, CalendarClock } from "lucide-react";
+import { Calendar, User, Users, FileText, CalendarClock, Send } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -412,6 +412,62 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
 
                 {/* Task Documents */}
                 <TaskFiles taskDocs={task.taskDocs} />
+
+                {/* Task Submissions */}
+                {task.submissions && task.submissions.length > 0 && (
+                    <div className="rounded-lg border bg-card p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Send className="h-5 w-5 text-muted-foreground" />
+                            <h3 className="font-semibold">Submissions ({task.submissions.length})</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {task.submissions.map((submission) => (
+                                <div
+                                    key={submission.id}
+                                    className="p-4 rounded-lg border bg-muted/50"
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <User className="h-5 w-5 text-primary" />
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold">{submission.title}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    by {submission.submitter.firstName} {submission.submitter.lastName}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right text-sm text-muted-foreground">
+                                            <p>{new Date(submission.createdAt).toLocaleDateString("en-US", {
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "numeric"
+                                            })}</p>
+                                            <p>{new Date(submission.createdAt).toLocaleTimeString("en-US", {
+                                                hour: "2-digit",
+                                                minute: "2-digit"
+                                            })}</p>
+                                        </div>
+                                    </div>
+                                    {submission.description && (
+                                        <p className="text-sm text-muted-foreground mt-2 pl-13">
+                                            {submission.description}
+                                        </p>
+                                    )}
+                                    {submission.reviewer && (
+                                        <div className="mt-3 pl-13 flex items-center gap-2 text-sm">
+                                            <span className="text-muted-foreground">Reviewed by:</span>
+                                            <span className="font-medium">
+                                                {submission.reviewer.firstName} {submission.reviewer.lastName}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Sub-tasks */}
                 {task.children && task.children.length > 0 && (

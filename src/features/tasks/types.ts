@@ -73,6 +73,36 @@ export interface ExtendedDeadline {
     updatedAt: string;
 }
 
+export interface Submitter {
+    id: string;
+    staffId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileNumber: string | null;
+    gender: string;
+    employmentType: string;
+    joinDate: string;
+    lastDate: string | null;
+    status: string;
+    user: {
+        id: string;
+    } | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface TaskSubmission {
+    id: string;
+    submitter: Submitter;
+    reviewer: Submitter | null;
+    title: string;
+    description: string | null;
+    deletedAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface Task {
     id: string;
     parent: Task | null;
@@ -90,6 +120,7 @@ export interface Task {
     deletedAt: string | null;
     assigns: TaskAssign[];
     taskDocs: TaskDoc[];
+    submissions: TaskSubmission[];
     createdAt: string;
     updatedAt: string;
 }
