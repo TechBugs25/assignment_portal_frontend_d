@@ -165,7 +165,6 @@ export default function TaskForm({ employees, ideas, tasks }: TaskFormProps) {
         if (result.success) {
             toast.success(result.message || "Task created successfully");
             router.push("/dashboard/tasks");
-            router.refresh();
         } else {
             toast.error(result.message || "Failed to create task");
         }
