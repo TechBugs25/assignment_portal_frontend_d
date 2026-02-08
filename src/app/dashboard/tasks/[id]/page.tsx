@@ -14,6 +14,7 @@ import { ExtendDeadlineButton } from "@/features/tasks/components/extend-deadlin
 import { EditTaskButton } from "@/features/tasks/components/edit-task-button";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
+import { SubmitTaskButton } from "@/features/tasks/components/submit-task-button";
 
 interface TaskDetailPageProps {
     params: Promise<{ id: string }>;
@@ -90,6 +91,12 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
     const currentUserId = session?.user.id;
 
     const isCreator = currentUserId && task.creator.user?.id === currentUserId;
+
+    // Check if current user is assigned to this task
+    const isAssigned = currentUserId && task.assigns.some(
+        assign => assign.assignee.user?.id === currentUserId
+    );
+
     // Use the last extended deadline if it exists, otherwise use the original deadline
     let deadlineToUse = task.deadline;
     let isExtendedDeadline = false;
@@ -127,6 +134,9 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                             />
                             <ExtendDeadlineButton taskId={task.id} currentDeadline={deadlineToUse} />
                         </>
+                    )}
+                    {isAssigned && task.status === TaskStatus.ON_PROCESS && (
+                        <SubmitTaskButton taskId={task.id} />
                     )}
                     <Button variant="outline" asChild>
                         <Link href="/dashboard/tasks">

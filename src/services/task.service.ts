@@ -2,7 +2,7 @@
 
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
-import { Task, PaginationMeta, TasksResponse, PriorityLevels, TaskStatus, UpdateTaskData } from "@/features/tasks/types";
+import { Task, PaginationMeta, TasksResponse, PriorityLevels, TaskStatus, UpdateTaskData, TaskSubmissionData } from "@/features/tasks/types";
 
 export interface GetTasksResult {
     tasks: Task[];
@@ -288,6 +288,50 @@ export async function updateTask(taskId: string, taskData: UpdateTaskData): Prom
         return {
             success: false,
             message: "An error occurred while updating the task"
+        };
+    }
+}
+
+export async function submitTask(data: TaskSubmissionData): Promise<ApiResponse> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    if (!session?.accessToken) {
+        return { success: false, message: "Not authenticated" };
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task-submission`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: responseData.message || "Failed to submit task"
+            };
+        }
+
+        return {
+            success: true,
+            message: data.finalSubmit 
+                ? "Task submitted successfully" 
+                : "Draft saved successfully"
+        };
+    } catch (error) {
+        console.error("Error submitting task:", error);
+        return {
+            success: false,
+            message: "An error occurred while submitting the task"
         };
     }
 }

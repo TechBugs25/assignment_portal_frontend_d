@@ -117,3 +117,11 @@ export interface UpdateTaskData {
     assignedTo?: string[];
     fileIds?: string[];
 }
+
+export interface TaskSubmissionData {
+    taskId: string;
+    title: string;
+    description?: string;
+    fileIds?: string[];
+    finalSubmit?: boolean;
+}
