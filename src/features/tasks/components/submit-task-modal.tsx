@@ -133,7 +133,8 @@ export function SubmitTaskModal({ taskId, open, onOpenChange }: SubmitTaskModalP
                         Submit Task
                     </DialogTitle>
                     <DialogDescription>
-                        Submit your work for this task. You can save as draft or submit as final.
+                        {/* Submit your work for this task. You can save as draft or submit as final. */}
+                        Submit your work for this task.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -218,7 +219,7 @@ export function SubmitTaskModal({ taskId, open, onOpenChange }: SubmitTaskModalP
                     >
                         Cancel
                     </Button>
-                    <Button
+                    {/* <Button
                         type="button"
                         variant="secondary"
                         onClick={() => handleSubmit(false)}
@@ -232,7 +233,7 @@ export function SubmitTaskModal({ taskId, open, onOpenChange }: SubmitTaskModalP
                         ) : (
                             "Save Draft"
                         )}
-                    </Button>
+                    </Button> */}
                     <Button
                         type="button"
                         onClick={() => handleSubmit(true)}

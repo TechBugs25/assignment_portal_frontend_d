@@ -7,14 +7,15 @@ import { User } from "lucide-react";
 interface SubmissionNotesProps {
     submissionId: string;
     notes: TaskSubmissionNote[];
+    isCompleted?: boolean;
 }
 
-export function SubmissionNotes({ submissionId, notes }: SubmissionNotesProps) {
+export function SubmissionNotes({ submissionId, notes, isCompleted = false }: SubmissionNotesProps) {
     return (
         <div className="mt-4 space-y-4">
             <div className="flex items-center justify-between">
                 <h4 className="text-sm font-semibold text-muted-foreground">Notes ({notes.length})</h4>
-                <AddNoteModal submissionId={submissionId} />
+                {!isCompleted && <AddNoteModal submissionId={submissionId} />}
             </div>
 
             {notes.length > 0 ? (

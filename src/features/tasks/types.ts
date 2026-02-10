@@ -109,6 +109,7 @@ export interface TaskSubmission {
     deletedAt: string | null;
     notes: TaskSubmissionNote[];
     submissionDocs: TaskDoc[];
+    status: 'pending' | 'approved' | 'rejected';
     createdAt: string;
     updatedAt: string;
 }

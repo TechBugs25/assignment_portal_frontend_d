@@ -439,3 +439,45 @@ export async function addTaskSubmissionNote(submissionId: string, note: string):
         };
     }
 }
+
+export async function reviewTaskSubmission(submissionId: string, status: 'approved' | 'rejected'): Promise<ApiResponse> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    if (!session?.accessToken) {
+        return { success: false, message: "Not authenticated" };
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task-submission/review`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ submissionId, status }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: data.message || "Failed to review submission"
+            };
+        }
+
+        return {
+            success: true,
+            message: `Submission ${status} successfully`
+        };
+    } catch (error) {
+        console.error("Error reviewing submission:", error);
+        return {
+            success: false,
+            message: "An error occurred while reviewing the submission"
+        };
+    }
+}

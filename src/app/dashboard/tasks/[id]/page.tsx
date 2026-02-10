@@ -15,6 +15,7 @@ import { decrypt } from "@/lib/session";
 import { SubmitTaskButton } from "@/features/tasks/components/submit-task-button";
 import { SubmissionNotes } from "@/features/tasks/components/submission-notes";
 import { SubmissionFiles } from "@/features/tasks/components/submission-files";
+import { ReviewSubmissionButtons } from "@/features/tasks/components/review-submission-buttons";
 
 interface TaskDetailPageProps {
     params: Promise<{ id: string }>;
@@ -421,6 +422,19 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                                                 hour: "2-digit",
                                                 minute: "2-digit"
                                             })}</p>
+                                            {submission.status && (
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={cn(
+                                                        "mt-2 text-[10px] font-bold tracking-wider",
+                                                        submission.status === 'approved' && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+                                                        submission.status === 'rejected' && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+                                                        submission.status === 'pending' && "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                    )}
+                                                >
+                                                    {submission.status.toUpperCase()}
+                                                </Badge>
+                                            )}
                                         </div>
                                     </div>
                                     {submission.description && (
@@ -428,16 +442,27 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                                             {submission.description}
                                         </p>
                                     )}
-                                    {submission.reviewer && (
-                                        <div className="mt-3 pl-13 flex items-center gap-2 text-sm">
-                                            <span className="text-muted-foreground">Reviewed by:</span>
-                                            <span className="font-medium">
-                                                {submission.reviewer.firstName} {submission.reviewer.lastName}
-                                            </span>
-                                        </div>
-                                    )}
+                                    <div className="flex items-center justify-between mt-3 pl-13">
+                                        {submission.reviewer ? (
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <span className="text-muted-foreground">Reviewed by:</span>
+                                                <span className="font-medium">
+                                                    {submission.reviewer.firstName} {submission.reviewer.lastName}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div></div>
+                                        )}
+                                        {isCreator && !submission.reviewer && (
+                                            <ReviewSubmissionButtons submissionId={submission.id} />
+                                        )}
+                                    </div>
                                     <SubmissionFiles files={submission.submissionDocs || []} />
-                                    <SubmissionNotes submissionId={submission.id} notes={submission.notes || []} />
+                                    <SubmissionNotes
+                                        submissionId={submission.id}
+                                        notes={submission.notes || []}
+                                        isCompleted={task.status === TaskStatus.COMPLETE}
+                                    />
                                 </div>
                             ))}
                         </div>
