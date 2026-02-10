@@ -1,7 +1,7 @@
 "use server";
 
-import {decrypt} from "@/lib/session";
-import {cookies} from "next/headers";
+import { decrypt } from "@/lib/session";
+import { cookies } from "next/headers";
 import {
     Task,
     PaginationMeta,
@@ -25,7 +25,7 @@ export async function getTasks(page: number = 1, limit: number = 10): Promise<Ge
 
     const emptyResult: GetTasksResult = {
         tasks: [],
-        meta: {page: 1, limit: 10, total: 0, totalPages: 0}
+        meta: { page: 1, limit: 10, total: 0, totalPages: 0 }
     };
 
     if (!session?.accessToken) {
@@ -50,7 +50,7 @@ export async function getTasks(page: number = 1, limit: number = 10): Promise<Ge
 
         return {
             tasks: data.tasks || [],
-            meta: data.meta || {page: 1, limit: 10, total: 0, totalPages: 0}
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
         };
     } catch (error) {
         console.error("Error fetching tasks list:", error);
@@ -95,7 +95,7 @@ export async function searchTasks(query: string = "", page: number = 1, limit: n
 
         const data: TasksResponse = await response.json();
         const tasks = data.tasks || [];
-        const meta = data.meta || {page: 1, limit: 20, total: 0, totalPages: 0};
+        const meta = data.meta || { page: 1, limit: 20, total: 0, totalPages: 0 };
 
         return {
             items: tasks,
@@ -113,7 +113,7 @@ export async function getMyAssignedTasks(page: number = 1, limit: number = 10): 
     const sessionCookie = cookieStore.get("session")?.value;
     const session = await decrypt(sessionCookie);
 
-    const emptyResult = {tasks: [], meta: {page: 1, limit: 10, total: 0, totalPages: 0}};
+    const emptyResult = { tasks: [], meta: { page: 1, limit: 10, total: 0, totalPages: 0 } };
 
     if (!session?.accessToken) {
         return emptyResult;
@@ -136,7 +136,7 @@ export async function getMyAssignedTasks(page: number = 1, limit: number = 10): 
 
         return {
             tasks: data.tasks || [],
-            meta: data.meta || {page: 1, limit: 10, total: 0, totalPages: 0}
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
         };
     } catch (error) {
         console.error("Error fetching assigned tasks:", error);
@@ -150,7 +150,7 @@ export async function getMyCreatedTasks(page: number = 1, limit: number = 10): P
     const sessionCookie = cookieStore.get("session")?.value;
     const session = await decrypt(sessionCookie);
 
-    const emptyResult = {tasks: [], meta: {page: 1, limit: 10, total: 0, totalPages: 0}};
+    const emptyResult = { tasks: [], meta: { page: 1, limit: 10, total: 0, totalPages: 0 } };
 
     if (!session?.accessToken) {
         return emptyResult;
@@ -173,7 +173,7 @@ export async function getMyCreatedTasks(page: number = 1, limit: number = 10): P
 
         return {
             tasks: data.tasks || [],
-            meta: data.meta || {page: 1, limit: 10, total: 0, totalPages: 0}
+            meta: data.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
         };
     } catch (error) {
         console.error("Error fetching created tasks:", error);
@@ -238,7 +238,7 @@ export async function createTask(taskData: CreateTaskData): Promise<ApiResponse>
     const session = await decrypt(sessionCookie);
 
     if (!session?.accessToken) {
-        return {success: false, message: "Not authenticated"};
+        return { success: false, message: "Not authenticated" };
     }
 
     try {
@@ -284,7 +284,7 @@ export async function extendTaskDeadline(taskId: string, deadline: string): Prom
     const session = await decrypt(sessionCookie);
 
     if (!session?.accessToken) {
-        return {success: false, message: "Not authenticated"};
+        return { success: false, message: "Not authenticated" };
     }
 
     try {
@@ -294,19 +294,19 @@ export async function extendTaskDeadline(taskId: string, deadline: string): Prom
                 "Authorization": `Bearer ${session.accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({taskId, deadline}),
+            body: JSON.stringify({ taskId, deadline }),
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            return {success: false, message: data.message || "Failed to extend deadline"};
+            return { success: false, message: data.message || "Failed to extend deadline" };
         }
 
-        return {success: true, message: "Deadline extended successfully", extendedDeadline: data.extendedDeadline};
+        return { success: true, message: "Deadline extended successfully", extendedDeadline: data.extendedDeadline };
     } catch (error) {
         console.error("Error extending deadline:", error);
-        return {success: false, message: "Failed to extend deadline"};
+        return { success: false, message: "Failed to extend deadline" };
     }
 }
 
@@ -317,7 +317,7 @@ export async function updateTask(taskId: string, taskData: UpdateTaskData): Prom
     const session = await decrypt(sessionCookie);
 
     if (!session?.accessToken) {
-        return {success: false, message: "Not authenticated"};
+        return { success: false, message: "Not authenticated" };
     }
 
     // console.log(taskData);
@@ -361,7 +361,7 @@ export async function submitTask(data: TaskSubmissionData): Promise<ApiResponse>
     const session = await decrypt(sessionCookie);
 
     if (!session?.accessToken) {
-        return {success: false, message: "Not authenticated"};
+        return { success: false, message: "Not authenticated" };
     }
 
     try {
@@ -394,6 +394,48 @@ export async function submitTask(data: TaskSubmissionData): Promise<ApiResponse>
         return {
             success: false,
             message: "An error occurred while submitting the task"
+        };
+    }
+}
+
+export async function addTaskSubmissionNote(submissionId: string, note: string): Promise<ApiResponse> {
+    const baseUrl = process.env.BACKEND_LINK;
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+    const session = await decrypt(sessionCookie);
+
+    if (!session?.accessToken) {
+        return { success: false, message: "Not authenticated" };
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/task-submission/note`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ submissionId, note }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: data.message || "Failed to add note"
+            };
+        }
+
+        return {
+            success: true,
+            message: "Note added successfully"
+        };
+    } catch (error) {
+        console.error("Error adding note:", error);
+        return {
+            success: false,
+            message: "An error occurred while adding the note"
         };
     }
 }

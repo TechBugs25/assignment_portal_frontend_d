@@ -92,6 +92,14 @@ export interface Submitter {
     updatedAt: string;
 }
 
+export interface TaskSubmissionNote {
+    id: string;
+    note: string;
+    actor: Creator;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface TaskSubmission {
     id: string;
     submitter: Submitter;
@@ -99,6 +107,7 @@ export interface TaskSubmission {
     title: string;
     description: string | null;
     deletedAt: string | null;
+    notes: TaskSubmissionNote[];
     createdAt: string;
     updatedAt: string;
 }
