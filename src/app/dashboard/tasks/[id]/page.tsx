@@ -14,6 +14,7 @@ import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
 import { SubmitTaskButton } from "@/features/tasks/components/submit-task-button";
 import { SubmissionNotes } from "@/features/tasks/components/submission-notes";
+import { SubmissionFiles } from "@/features/tasks/components/submission-files";
 
 interface TaskDetailPageProps {
     params: Promise<{ id: string }>;
@@ -435,6 +436,7 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                                             </span>
                                         </div>
                                     )}
+                                    <SubmissionFiles files={submission.submissionDocs || []} />
                                     <SubmissionNotes submissionId={submission.id} notes={submission.notes || []} />
                                 </div>
                             ))}

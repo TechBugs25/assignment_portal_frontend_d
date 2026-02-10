@@ -108,6 +108,7 @@ export interface TaskSubmission {
     description: string | null;
     deletedAt: string | null;
     notes: TaskSubmissionNote[];
+    submissionDocs: TaskDoc[];
     createdAt: string;
     updatedAt: string;
 }

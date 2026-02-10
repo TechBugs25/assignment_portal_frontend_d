@@ -1,8 +1,8 @@
 "use client";
 
-import React, {useState, useEffect, useCallback} from "react";
-import {useRouter} from "next/navigation";
-import {Button} from "@/components/ui/button";
+import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -11,9 +11,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
@@ -21,16 +21,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {toast} from "sonner";
-import {updateTask} from "@/services/task.service";
-import {searchTasks} from "@/services/task.service";
-import {searchEmployees} from "@/services/employee.service";
-import {searchIdeas} from "@/services/idea.service";
-import {uploadFile, deleteFile} from "@/services/file.service";
-import {PriorityLevels, Task, TaskStatus} from "@/features/tasks/types";
-import {Loader2, Edit, Upload, X, FileIcon, Check} from "lucide-react";
-import {AsyncSearchableSelect, SearchFunction} from "@/components/ui/async-searchable-select";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import { toast } from "sonner";
+import { updateTask } from "@/services/task.service";
+import { searchTasks } from "@/services/task.service";
+import { searchEmployees } from "@/services/employee.service";
+import { searchIdeas } from "@/services/idea.service";
+import { uploadFile, deleteFile } from "@/services/file.service";
+import { PriorityLevels, Task, TaskStatus } from "@/features/tasks/types";
+import { Loader2, Edit, Upload, X, FileIcon, Check } from "lucide-react";
+import { AsyncSearchableSelect, SearchFunction } from "@/components/ui/async-searchable-select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Types for searchable items
 interface EmployeeItem {
@@ -61,7 +61,7 @@ const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 };
 
-export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
+export function EditTaskModal({ task, open, onOpenChange }: EditTaskModalProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -272,7 +272,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                 </Avatar>
                 {isSelected && (
                     <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-[2px]">
-                        <Check className="h-2 w-2"/>
+                        <Check className="h-2 w-2" />
                     </div>
                 )}
             </div>
@@ -295,7 +295,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                     className="ml-1 rounded-full p-0.5 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                     onClick={onRemove}
                 >
-                    <X className="h-3 w-3"/>
+                    <X className="h-3 w-3" />
                 </div>
             )}
         </div>
@@ -306,7 +306,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
             <DialogContent className="sm:max-w-150 max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Edit className="h-5 w-5 text-primary"/>
+                        <Edit className="h-5 w-5 text-primary" />
                         Edit Task
                     </DialogTitle>
                     <DialogDescription>
@@ -323,7 +323,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                             <Input
                                 id="title"
                                 value={formData.title}
-                                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 required
                                 disabled={loading}
                             />
@@ -335,7 +335,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                             <Textarea
                                 id="description"
                                 value={formData.description}
-                                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={4}
                                 disabled={loading}
                             />
@@ -348,12 +348,12 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                 <Select
                                     value={formData.priority}
                                     onValueChange={(value: PriorityLevels) =>
-                                        setFormData({...formData, priority: value})
+                                        setFormData({ ...formData, priority: value })
                                     }
                                     disabled={loading}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue/>
+                                        <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {Object.values(PriorityLevels).map((priority) => (
@@ -370,12 +370,12 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                 <Select
                                     value={formData.status}
                                     onValueChange={(value: TaskStatus) =>
-                                        setFormData({...formData, status: value})
+                                        setFormData({ ...formData, status: value })
                                     }
                                     disabled={loading}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue/>
+                                        <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {Object.values(TaskStatus).map((status) => (
@@ -463,10 +463,10 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                             <div
                                                 key={doc.file.id}
                                                 className={`flex items-center justify-between p-2 border rounded ${isRemoved ? "opacity-50 line-through" : ""
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <FileIcon className="h-4 w-4"/>
+                                                    <FileIcon className="h-4 w-4" />
                                                     <span className="text-sm">{doc.file.originalName}</span>
                                                 </div>
                                                 {!isRemoved && (
@@ -477,7 +477,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                                         onClick={() => handleRemoveExistingFile(doc.file.id)}
                                                         disabled={loading}
                                                     >
-                                                        <X className="h-4 w-4"/>
+                                                        <X className="h-4 w-4" />
                                                     </Button>
                                                 )}
                                             </div>
@@ -496,7 +496,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                     disabled={loading}
                                     className="flex-1"
                                 />
-                                <Upload className="h-4 w-4 text-muted-foreground"/>
+                                <Upload className="h-4 w-4 text-muted-foreground" />
                             </div>
 
                             {files.length > 0 && (
@@ -515,7 +515,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                                                 onClick={() => handleRemoveFile(index)}
                                                 disabled={loading}
                                             >
-                                                <X className="h-4 w-4"/>
+                                                <X className="h-4 w-4" />
                                             </Button>
                                         </div>
                                     ))}
@@ -535,7 +535,7 @@ export function EditTaskModal({task, open, onOpenChange}: EditTaskModalProps) {
                         <Button type="submit" disabled={loading || uploading}>
                             {loading ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     {uploading ? "Uploading..." : "Updating..."}
                                 </>
                             ) : (
