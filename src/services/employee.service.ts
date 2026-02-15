@@ -171,6 +171,7 @@ export interface ApiResponse {
     success: boolean;
     message?: string;
     errors?: Record<string, string[]>;
+    data?: Employee;
 }
 
 export async function createEmployee(employeeData: Record<string, unknown>): Promise<ApiResponse> {
@@ -194,7 +195,6 @@ export async function createEmployee(employeeData: Record<string, unknown>): Pro
         });
 
         const data = await response.json();
-
         if (!response.ok) {
             return {
                 success: false,
@@ -203,7 +203,7 @@ export async function createEmployee(employeeData: Record<string, unknown>): Pro
             };
         }
 
-        return { success: true, message: "Employee created successfully" };
+        return { success: true, message: "Employee created successfully", data: data.employee };
     } catch (error) {
         console.error("Error creating employee:", error);
         return { success: false, message: "An error occurred while creating the employee" };

@@ -4,11 +4,13 @@ import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Employee, Status, Gender, EmploymentType, Department } from "@/features/employees/types";
 import { createEmployee, updateEmployee, getDepartments } from "@/services/employee.service";
+import { createUser } from "@/services/user.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileUpload } from "@/components/ui/file-upload";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -50,6 +52,10 @@ export function EmployeeForm({ employee, mode }: EmployeeFormProps) {
         designation: employee?.designation || "",
         fileId: employee?.profilePicture?.id || "",
     });
+
+    // innovative user creation state
+    const [createUserAccount, setCreateUserAccount] = useState(false);
+    const [password, setPassword] = useState("");
 
     const [currentFileId, setCurrentFileId] = useState(employee?.profilePicture?.id || "");
     const [currentFilePath, setCurrentFilePath] = useState(employee?.profilePicture?.path || "");
@@ -100,6 +106,12 @@ export function EmployeeForm({ employee, mode }: EmployeeFormProps) {
             newErrors.lastDate = "Last date cannot be before join date";
         }
 
+        if (mode === "create" && createUserAccount) {
+            if (!password || password.length < 6) {
+                newErrors.password = "Password must be at least 6 characters";
+            }
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -130,6 +142,33 @@ export function EmployeeForm({ employee, mode }: EmployeeFormProps) {
                 toast.success(result.message);
                 // Use window.location for reliable navigation after form submission
                 if (mode === "create") {
+                    if (createUserAccount && result.success) {
+                        console.log("Attempting to create user account...");
+                        // Attempt to create user account
+                        console.log("Create Employee Result Data:", result.data);
+
+                        if (result.data && result.data.id) {
+                            try {
+                                console.log(`Creating user for employee ID: ${result.data.id}`);
+                                const userResult = await createUser(result.data.id, password);
+                                console.log("User Creation Result:", userResult);
+
+                                if (userResult.success) {
+                                    toast.success("User account created successfully");
+                                    // Add a small delay allowing toast to be seen?
+                                } else {
+                                    console.error("User creation failed:", userResult);
+                                    toast.error("Employee created but user creation failed: " + userResult.message);
+                                }
+                            } catch (error) {
+                                console.error("User creation error:", error);
+                                toast.error("Employee created but user creation failed due to an error.");
+                            }
+                        } else {
+                            console.error("No employee ID returned", result);
+                            toast.error("Employee created but failed to get ID for user creation.");
+                        }
+                    }
                     window.location.href = "/dashboard/employees";
                 } else {
                     window.location.href = `/dashboard/employees/${employee!.id}`;
@@ -337,6 +376,49 @@ export function EmployeeForm({ employee, mode }: EmployeeFormProps) {
                         )}
                     </CardContent>
                 </Card>
+
+                {/* User Account Creation (Only for new employees) */}
+                {mode === "create" && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>User Account</CardTitle>
+                            <CardDescription>
+                                Create a login account for this employee.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="createUser"
+                                    checked={createUserAccount}
+                                    onCheckedChange={(checked) => setCreateUserAccount(checked as boolean)}
+                                />
+                                <Label htmlFor="createUser">Create User Account</Label>
+                            </div>
+
+                            {createUserAccount && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password *</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => {
+                                            setPassword(e.target.value);
+                                            if (errors.password) {
+                                                setErrors(prev => ({ ...prev, password: "" }));
+                                            }
+                                        }}
+                                        placeholder="Enter password (min 6 chars)"
+                                    />
+                                    {errors.password && (
+                                        <p className="text-sm text-red-500">{errors.password}</p>
+                                    )}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Profile Picture */}
                 <FileUpload
