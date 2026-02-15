@@ -29,20 +29,21 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
             return null;
         }
 
-        const { user, department } = await response.json();
+        const { user } = await response.json();
         const e = user.employee;
 
         return {
             id: e.staffId,
             name: `${e.firstName} ${e.lastName}`,
-            email: user.email ?? "",
-            phone: e.mobileNumber,
+            designation: e.designation,
+            email: e.email ?? "",
+            phone: e.mobileNumber ?? "N/A",
             gender: e.gender,
             status: e.status === "active" ? "ACTIVE" : "INACTIVE",
             employmentType: e.employmentType,
             joinedAt: e.joinDate,
             lastDate: e.lastDate ?? "N/A",
-            department: department ?? "N/A",
+            department: e.department?.name ?? "N/A",
             avatarUrl: e.profilePicture?.path
                 ? `${baseUrl}/${e.profilePicture.path.replace(/\\/g, '/')}`
                 : `https://i.pravatar.cc/150?u=${userId}`,
@@ -152,7 +153,6 @@ export async function getEmployeesWithoutUser(): Promise<EmployeeWithoutUser[]> 
 
 export async function createUser(
     employeeId: string,
-    email: string,
     password: string
 ): Promise<CreateUserResponse> {
     const baseUrl = process.env.BACKEND_LINK;
@@ -171,7 +171,7 @@ export async function createUser(
                 "Authorization": `Bearer ${session.accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ employeeId, email, password }),
+            body: JSON.stringify({ employeeId, password }),
         });
 
         const data = await response.json();
@@ -194,7 +194,6 @@ export async function updateUser(
     userId: string,
     data: {
         employeeId?: string;
-        email?: string;
         password?: string;
         status?: string;
     }

@@ -16,10 +16,11 @@ export default function EmploymentDetailsCard({
 
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-y-8">
                 <Info label="Employee ID" value={profile.id} />
+                <Info label="Designation" value={profile.designation} />
                 <Info label="Department" value={profile.department} />
                 <Info label="Status" value={profile.status} />
                 <Info label="Join Date" value={profile.joinedAt} />
-                <Info label="Last Date" value={profile.lastDate}/>
+                <Info label="Last Date" value={profile.lastDate} />
             </CardContent>
         </Card>
     );

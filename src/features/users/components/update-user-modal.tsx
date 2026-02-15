@@ -31,7 +31,6 @@ export function UpdateUserModal({ user, open, onOpenChange, onSuccess }: UpdateU
 
     const [formData, setFormData] = useState({
         employeeId: user.employee?.id || "",
-        email: user.email,
         password: "",
         status: user.status,
     });
@@ -43,7 +42,6 @@ export function UpdateUserModal({ user, open, onOpenChange, onSuccess }: UpdateU
             // Reset form data to current user data when dialog opens
             setFormData({
                 employeeId: user.employee?.id || "",
-                email: user.email,
                 password: "",
                 status: user.status,
             });
@@ -83,9 +81,6 @@ export function UpdateUserModal({ user, open, onOpenChange, onSuccess }: UpdateU
 
             if (formData.employeeId && formData.employeeId !== user.employee?.id) {
                 updateData.employeeId = formData.employeeId;
-            }
-            if (formData.email && formData.email !== user.email) {
-                updateData.email = formData.email;
             }
             if (formData.password) {
                 updateData.password = formData.password;
@@ -160,18 +155,6 @@ export function UpdateUserModal({ user, open, onOpenChange, onSuccess }: UpdateU
                             <p className="text-xs text-muted-foreground">
                                 Current: {user.employee?.staffId} - {user.employee?.firstName} {user.employee?.lastName}
                             </p>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                placeholder="user@company.com"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
                         </div>
 
                         <div className="space-y-2">

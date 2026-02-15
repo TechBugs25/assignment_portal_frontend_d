@@ -29,7 +29,6 @@ export function CreateUserModal({ onSuccess }: CreateUserModalProps) {
 
     const [formData, setFormData] = useState({
         employeeId: "",
-        email: "",
         password: "",
     });
 
@@ -69,9 +68,6 @@ export function CreateUserModal({ onSuccess }: CreateUserModalProps) {
         if (!formData.employeeId) {
             newErrors.employeeId = "Please select an employee";
         }
-        if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = "Please enter a valid email";
-        }
         if (!formData.password || formData.password.length < 6) {
             newErrors.password = "Password must be at least 6 characters";
         }
@@ -90,14 +86,13 @@ export function CreateUserModal({ onSuccess }: CreateUserModalProps) {
         try {
             const result = await createUser(
                 formData.employeeId,
-                formData.email,
                 formData.password
             );
 
             if (result.success) {
                 toast.success(result.message || "User created successfully");
                 setOpen(false);
-                setFormData({ employeeId: "", email: "", password: "" });
+                setFormData({ employeeId: "", password: "" });
                 setErrors({});
                 if (onSuccess) {
                     onSuccess();
@@ -158,21 +153,6 @@ export function CreateUserModal({ onSuccess }: CreateUserModalProps) {
                             )}
                             {errors.employeeId && (
                                 <p className="text-sm text-red-500">{errors.employeeId}</p>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email *</Label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                placeholder="user@company.com"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email}</p>
                             )}
                         </div>
 

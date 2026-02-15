@@ -4,6 +4,7 @@ export interface Profile {
     email: string;
     phone: string;
     gender: string;
+    designation: string;
     status: "ACTIVE" | "INACTIVE";
     employmentType: string;
     joinedAt: string;

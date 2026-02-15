@@ -1,7 +1,7 @@
-import {Profile} from "./types";
-import {getUserProfile} from "@/services/user.service";
-import {cookies} from "next/headers";
-import {decrypt} from "@/lib/session";
+import { Profile } from "./types";
+import { getUserProfile } from "@/services/user.service";
+import { cookies } from "next/headers";
+import { decrypt } from "@/lib/session";
 
 export async function getProfile(): Promise<Profile> {
     const cookieStore = await cookies();
@@ -21,6 +21,8 @@ export async function getProfile(): Promise<Profile> {
             email: "error@example.com",
             phone: "N/A",
             gender: "N/A",
+            designation: "N/A",
+            employmentType: "N/A",
             status: "INACTIVE",
             joinedAt: "N/A",
             lastDate: "N/A",

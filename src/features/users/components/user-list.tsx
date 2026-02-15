@@ -93,7 +93,7 @@ export function UserTable({ users, meta }: UserTableProps) {
                                 <TableCell className="font-mono text-primary">
                                     {user.employee?.staffId || "N/A"}
                                 </TableCell>
-                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.employee?.email}</TableCell>
                                 <TableCell>
                                     <Badge
                                         variant="secondary"

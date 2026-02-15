@@ -28,7 +28,6 @@ export interface Employee {
 
 export interface User {
     id: string;
-    email: string;
     failedAttemptCount: number;
     maxFailedAttempts: number;
     lockedUntil: string | null;
