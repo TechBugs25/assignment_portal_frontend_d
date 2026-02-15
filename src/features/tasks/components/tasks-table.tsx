@@ -207,7 +207,11 @@ export function TasksTable({ tasks, meta }: TasksTableProps) {
                                                 getStatusColor(task.status)
                                             )}
                                         >
-                                            {task.status}
+                                            {task.status === TaskStatus.PENDING
+                                                ? "Unassigned"
+                                                : task.status === TaskStatus.ON_PROCESS
+                                                    ? "Assigned"
+                                                    : task.status}
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
