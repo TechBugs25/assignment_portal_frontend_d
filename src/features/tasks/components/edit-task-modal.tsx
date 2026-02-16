@@ -365,7 +365,7 @@ export function EditTaskModal({ task, open, onOpenChange }: EditTaskModalProps) 
                                 </Select>
                             </div>
 
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="status">Status</Label>
                                 <Select
                                     value={formData.status}
@@ -381,6 +381,32 @@ export function EditTaskModal({ task, open, onOpenChange }: EditTaskModalProps) 
                                         {Object.values(TaskStatus).map((status) => (
                                             <SelectItem key={status} value={status}>
                                                 {status}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div> */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="status">Status</Label>
+                                <Select
+                                    value={formData.status}
+                                    onValueChange={(value: TaskStatus) =>
+                                        setFormData({ ...formData, status: value })
+                                    }
+                                    disabled={loading}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.values(TaskStatus).map((status) => (
+                                            <SelectItem key={status} value={status}>
+                                                {/* Apply your display logic here */}
+                                                {status === TaskStatus.PENDING
+                                                    ? "Unassigned"
+                                                    : status === TaskStatus.ON_PROCESS
+                                                        ? "Assigned"
+                                                        : status}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

@@ -144,7 +144,11 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
                                     getStatusColor(task.status)
                                 )}
                             >
-                                {task.status}
+                                {task.status === TaskStatus.PENDING
+                                    ? "Unassigned"
+                                    : task.status === TaskStatus.ON_PROCESS
+                                        ? "Assigned"
+                                        : task.status}
                             </Badge>
                         </div>
                         <div className="flex items-center gap-2">
