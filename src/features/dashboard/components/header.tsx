@@ -1,6 +1,5 @@
 "use client";
 import {
-    BellIcon,
     SearchIcon,
 } from "@/components/ui/icons";
 import { ModeToggle } from "@/components/ui/mode-toggle";

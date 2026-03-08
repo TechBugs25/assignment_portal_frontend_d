@@ -3,7 +3,7 @@ import { TaskIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TaskStatus, PriorityLevels } from "@/features/tasks/types";
-import { Calendar, User, Users, FileText, CalendarClock, Send } from "lucide-react";
+import { Calendar, User, Users, FileText, Send } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

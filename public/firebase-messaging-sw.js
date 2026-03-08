@@ -13,7 +13,7 @@ firebase.initializeApp({
     messagingSenderId: urlParams.get('messagingSenderId'),
     appId: urlParams.get('appId')
 });
-const messaging = firebase.messaging();
+// const messaging = firebase.messaging();
 
 // // 3. Handle background messages gracefully
 // messaging.onBackgroundMessage((payload) => {

@@ -5,9 +5,7 @@ import { BellIcon, CheckIcon } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -48,7 +46,7 @@ export function NotificationDropdown({ employeeId }: NotificationDropdownProps) 
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+
     const router = useRouter();
 
     const fetchNotifications = useCallback(async () => {
@@ -63,13 +61,17 @@ export function NotificationDropdown({ employeeId }: NotificationDropdownProps) 
 
     // Initial fetch
     useEffect(() => {
-        fetchNotifications();
+        const timer = setTimeout(() => {
+            fetchNotifications().catch(console.error);
+        }, 0);
+        return () => clearTimeout(timer);
     }, [fetchNotifications]);
 
     useEffect(() => {
 
         if (!socket) return;
 
+        // eslint-disable-next-line
         const handleNewNotification = (data: any) => {
 
             if (Array.isArray(data)) {
@@ -79,6 +81,7 @@ export function NotificationDropdown({ employeeId }: NotificationDropdownProps) 
                     return [...newItems, ...prev];
                 });
 
+                // eslint-disable-next-line
                 const unreadNew = data.filter((n: any) => !n.isRead).length;
                 if (unreadNew) setUnreadCount(prev => prev + unreadNew);
 
@@ -109,22 +112,6 @@ export function NotificationDropdown({ employeeId }: NotificationDropdownProps) 
 
     }, [socket]);
 
-    const handleMarkAsRead = async (e: React.MouseEvent, id: string) => {
-        e.stopPropagation();
-
-        // Optimistic update
-        setNotifications(prev =>
-            prev.map(n => n.id === id ? { ...n, isRead: true } : n)
-        );
-        setUnreadCount(prev => Math.max(0, prev - 1));
-
-        const success = await markNotificationAsRead(id);
-        if (!success) {
-            // Revert on failure
-            fetchNotifications();
-            toast.error("Failed to mark notification as read");
-        }
-    };
 
     const handleMarkAllAsRead = async () => {
         if (unreadCount === 0) return;

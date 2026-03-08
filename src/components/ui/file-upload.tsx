@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
-import { uploadFile, deleteFile, UploadedFile } from "@/services/file.service";
+import { uploadFile, deleteFile} from "@/services/file.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";

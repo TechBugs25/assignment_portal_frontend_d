@@ -3,9 +3,6 @@ import { TasksTable } from "@/features/tasks/components/tasks-table";
 import { TaskIcon } from "@/components/ui/icons";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
 
 interface TasksPageProps {
