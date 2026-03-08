@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { toast } from "sonner";
 import { TaskIcon } from "@/components/ui/icons";
-import { createTask, searchTasks } from "@/services/task.service";
+import { createTask, searchTasks, type CreateTaskData } from "@/services/task.service";
 import { PriorityLevels } from "@/features/tasks/types";
 import { searchIdeas } from "@/services/idea.service";
 import { searchEmployeesForSelect, EmployeeSelectItem } from "@/services/employee.service";
@@ -31,27 +31,35 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface TaskFormProps {
     onSuccess?: () => void;
     onCancel?: () => void;
+    initialIdeaId?: string;
+    initialIdeaTitle?: string;
 }
 
-export default function TaskForm({ onSuccess, onCancel }: TaskFormProps) {
+export default function TaskForm({ onSuccess, onCancel, initialIdeaId: propIdeaId, initialIdeaTitle: propIdeaTitle }: TaskFormProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const initialIdeaId = propIdeaId || searchParams.get("ideaId");
+    const initialIdeaTitle = propIdeaTitle || searchParams.get("title");
+
     const [loading, setLoading] = useState(false);
     const [fileUploading, setFileUploading] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<Array<{ id: string; name: string }>>([]);
 
     const [formData, setFormData] = useState({
-        title: "",
+        title: initialIdeaTitle || "",
         description: "",
         deadline: "",
         priority: PriorityLevels.MEDIUM,
         parentId: "",
-        ideaId: "",
+        ideaId: initialIdeaId || "",
         assignedTo: [] as string[],
     });
 
     // State for AsyncSearchableSelect components
     const [selectedParent, setSelectedParent] = useState<{ id: string; title: string } | null>(null);
-    const [selectedIdea, setSelectedIdea] = useState<{ id: string; title: string } | null>(null);
+    const [selectedIdea, setSelectedIdea] = useState<{ id: string; title: string } | null>(
+        initialIdeaId ? { id: initialIdeaId, title: initialIdeaTitle || "Selected Idea" } : null
+    );
     const [selectedEmployees, setSelectedEmployees] = useState<EmployeeSelectItem[]>([]);
 
 
@@ -131,7 +139,7 @@ export default function TaskForm({ onSuccess, onCancel }: TaskFormProps) {
             } else {
                 toast.error(result.message || "Failed to upload file");
             }
-        } catch (error) {
+        } catch {
             toast.error("An error occurred while uploading the file");
         } finally {
             setFileUploading(false);
@@ -148,7 +156,7 @@ export default function TaskForm({ onSuccess, onCancel }: TaskFormProps) {
             } else {
                 toast.error(result.message || "Failed to remove file");
             }
-        } catch (error) {
+        } catch {
             toast.error("An error occurred while removing the file");
         }
     };
@@ -174,7 +182,7 @@ export default function TaskForm({ onSuccess, onCancel }: TaskFormProps) {
         }
 
         // Create task data object
-        const taskData: any = {
+        const taskData: CreateTaskData = {
             title: formData.title.trim(),
             priority: formData.priority,
             deadline: formData.deadline,

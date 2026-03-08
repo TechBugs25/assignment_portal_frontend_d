@@ -19,10 +19,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EditIdeaModal } from "./edit-idea-modal";
+import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ListPlus, Globe, Lock, Users, Building2 } from "lucide-react";
-import Link from "next/link";
+
 
 interface IdeasTableProps {
     ideas: Idea[];
@@ -200,11 +201,17 @@ export function IdeasTable({ ideas, meta, showActions = false, showEdit = false,
                                             <div className="flex items-center justify-center gap-2">
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <Button variant="ghost" size="icon" asChild>
-                                                            <Link href={`/dashboard/tasks/add?ideaId=${idea.id}`}>
-                                                                <ListPlus className="h-4 w-4" />
-                                                            </Link>
-                                                        </Button>
+                                                        <div>
+                                                            <CreateTaskModal 
+                                                                initialIdeaId={idea.id} 
+                                                                initialIdeaTitle={idea.title}
+                                                                trigger={
+                                                                    <Button variant="ghost" size="icon">
+                                                                        <ListPlus className="h-4 w-4" />
+                                                                    </Button>
+                                                                }
+                                                            />
+                                                        </div>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
                                                         <p>Create Task from Idea</p>

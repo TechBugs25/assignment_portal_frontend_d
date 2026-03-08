@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -13,16 +13,24 @@ import {
 import { Plus } from "lucide-react";
 import TaskForm from "./task-form";
 
-export function CreateTaskModal() {
+interface CreateTaskModalProps {
+    trigger?: ReactNode;
+    initialIdeaId?: string;
+    initialIdeaTitle?: string;
+}
+
+export function CreateTaskModal({ trigger, initialIdeaId, initialIdeaTitle }: CreateTaskModalProps = {}) {
     const [open, setOpen] = useState(false);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Create Task
-                </Button>
+                {trigger || (
+                    <Button className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        Create Task
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -35,6 +43,8 @@ export function CreateTaskModal() {
                     <TaskForm
                         onSuccess={() => setOpen(false)}
                         onCancel={() => setOpen(false)}
+                        initialIdeaId={initialIdeaId}
+                        initialIdeaTitle={initialIdeaTitle}
                     />
                 </div>
             </DialogContent>
