@@ -30,7 +30,7 @@ import { uploadFile, deleteFile } from "@/services/file.service";
 import { PriorityLevels, Task, TaskStatus } from "@/features/tasks/types";
 import { Loader2, Edit, Upload, X, FileIcon, Check } from "lucide-react";
 import { AsyncSearchableSelect, SearchFunction } from "@/components/ui/async-searchable-select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 // Types for searchable items
 interface EmployeeItem {

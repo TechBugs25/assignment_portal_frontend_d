@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { messaging, getToken, onMessage } from "@/lib/firebase";
 import { registerDeviceToken } from "@/services/notification.service";
-import { toast } from "sonner";
 
 export const useFCM = () => {
     const [fcmToken, setFcmToken] = useState<string | null>(null);
@@ -48,7 +47,9 @@ export const useFCM = () => {
                 }
 
                 // ⭐ foreground listener (SAFE)
-                unsubscribeFromMessages = onMessage(msg, (payload) => {
+                unsubscribeFromMessages = onMessage(msg, 
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    (payload) => {
                     // console.log("Foreground message received:", payload);
                     // toast("New Notification From FCM", {
                     //     description:

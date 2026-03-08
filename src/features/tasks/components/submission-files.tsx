@@ -12,13 +12,12 @@ export function SubmissionFiles({ files }: SubmissionFilesProps) {
     if (!files || files.length === 0) return null;
 
     const handleDownload = (filePath: string, fileName: string) => {
-        const downloadUrl = `${process.env.NEXT_PUBLIC_BACKEND_LINK || 'http://localhost:3001'}/${filePath}`;
+        // Use Next.js API route to proxy download and avoid CORS
+        const downloadUrl = `/api/download?path=${encodeURIComponent(filePath)}&name=${encodeURIComponent(fileName)}`;
 
-        // Create a temporary link to trigger download
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = fileName;
-        link.target = "_blank"; // Open in new tab which usually triggers download for unknown types or displays for known
+        link.download = fileName || 'download';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -83,17 +82,10 @@ export function SubmissionFiles({ files }: SubmissionFilesProps) {
                                     variant="ghost"
                                     size="icon"
                                     className="h-7 w-7"
-                                    asChild
+                                    onClick={() => handleDownload(filePath, doc.file.originalName)}
+                                    title="Download"
                                 >
-                                    <a
-                                        href={fileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        download
-                                        title="Download"
-                                    >
-                                        <Download className="h-3.5 w-3.5" />
-                                    </a>
+                                    <Download className="h-3.5 w-3.5" />
                                 </Button>
                             </div>
                         </div>

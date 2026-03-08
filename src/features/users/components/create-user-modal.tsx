@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, UserPlus, ChevronDown } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { createUser, getEmployeesWithoutUser, EmployeeWithoutUser } from "@/services/user.service";
 
 interface CreateUserModalProps {

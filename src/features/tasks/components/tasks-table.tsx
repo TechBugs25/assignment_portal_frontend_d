@@ -19,7 +19,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Users, CornerDownRight, Cross, X } from "lucide-react";
+import { Users, CornerDownRight, X } from "lucide-react";
 import { Eye } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

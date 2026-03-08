@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { submitTask } from "@/services/task.service";
 import { uploadFile, deleteFile } from "@/services/file.service";
-import { Loader2, Send, Upload, X } from "lucide-react";
+import { Loader2, Send, X } from "lucide-react";
 
 interface SubmitTaskModalProps {
     taskId: string;
@@ -87,6 +87,7 @@ export function SubmitTaskModal({ taskId, open, onOpenChange }: SubmitTaskModalP
 
         setLoading(true);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const submissionData: any = {
             taskId,
             title: formData.title.trim(),

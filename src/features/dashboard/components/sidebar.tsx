@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     DashboardIcon,
     PermissionIcon,
     TaskIcon,
-    TeamIcon,
+    // TeamIcon,
     MenuIcon,
     CloseIcon,
     EmployeeIcon,
@@ -16,13 +16,12 @@ import { Button } from "@/components/ui/button";
 import { NavItem } from "./nav-item";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 
 export function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['ideas', 'tasks']));
-    const pathname = usePathname();
+    // const pathname = usePathname();
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -36,7 +35,7 @@ export function Sidebar() {
         setExpandedSections(newExpanded);
     };
 
-    const isActive = (href: string) => pathname === href;
+    // const isActive = (href: string) => pathname === href;
 
     return (
         <>

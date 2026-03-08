@@ -2,7 +2,7 @@ import { Profile } from "@/features/dashboard/profile/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, Building, IdCard, Briefcase } from "lucide-react";
+import { Mail, Building, IdCard, Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface UserCardProps {
