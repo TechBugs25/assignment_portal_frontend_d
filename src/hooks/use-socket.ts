@@ -21,10 +21,10 @@ export const useSocket = (employeeId?: string) => {
         });
 
         socketRef.current = socket;
-        // setSocketInstance(socket);
         socket.on("connect", () => {
             console.log('Connected to notification server! 🚀');
             setIsConnected(true);
+            setSocketInstance(socket);
         });
 
         socket.on("disconnect", () => {
